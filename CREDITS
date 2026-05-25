@@ -1,0 +1,19 @@
+dpbox - Credits and Acknowledgements
+=====================================
+
+Original author:
+  Joachim Schurig, DL8HBS - DigiPoint for Atari ST, original Pascal source (1991-2000)
+
+Unix port:
+  Mark Wahl, DL4YBG - Translation to C via P2C, TNT socket interface (1994-2000)
+
+NetBSD port:
+  Berndt Josef Wulf, VK5ABN (SK) - Original NetBSD port and pkgsrc packaging (1999)
+  A dedicated amateur radio operator and software developer from South Australia.
+  Without his pioneering work this project would not exist in its current form.
+
+OpenBSD port:
+  jg1uaa - OpenBSD port and testing
+
+64-bit modernization:
+  Chris Maness, KQ6UP - 64-bit portability fixes, new upstream maintainer (2026)
