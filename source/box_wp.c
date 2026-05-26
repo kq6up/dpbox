@@ -100,26 +100,26 @@ static short get_wprot_r(wprottype *wpb, char *p, char *actsender) {
 
   get_pquoted(&p, hs);  /* version */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->version = atol(hs);
   if (!valid_wprot_version(wpb->version)) return -1;
 
   get_pquoted(&p, hs);  /* timestamp */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->timestamp = atol(hs);
   if (!valid_wprot_timestamp(wpb->timestamp)) return -1;
 
   get_pquoted(&p, hs); /* hops */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->hops = atoi(hs);
   if (wpb->hops < 1) return -1;
   if (wpb->hops > MAXWPHOPS) return -1;
   
   get_pquoted(&p, hs);  /* quality */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->quality = atol(hs);
 
   get_pquoted(&p, hs); /* must be empty */
@@ -197,7 +197,7 @@ static short get_wprot_b(wprottype *wpb, char *p, char *actsender) {
 
   get_pquoted(&p, hs);  /* version */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->version = atol(hs);
   if (!valid_wprot_version(wpb->version)) return -1;
 
@@ -205,7 +205,7 @@ static short get_wprot_b(wprottype *wpb, char *p, char *actsender) {
   if (!strcmp(hs, "?")) wpb->status = 0;
   else {
     s = hs;
-    while (*s) if (!isdigit(*s++)) return -1;
+    while (*s) if (!isdigit((u_char) *s++)) return -1;
     wpb->status = atoi(hs);
   }
   
@@ -223,13 +223,13 @@ static short get_wprot_b(wprottype *wpb, char *p, char *actsender) {
 
   get_pquoted(&p, hs);  /* timestamp */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->timestamp = atol(hs);
   if (!valid_wprot_timestamp(wpb->timestamp)) return -1;
 
   get_pquoted(&p, hs); /* hops */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->hops = atoi(hs);
   if (wpb->hops < 1) return -1;
   if (wpb->hops > MAXWPHOPS) return -1;
@@ -312,7 +312,7 @@ static short get_wprot_m(wprottype *wpb, char *p, char *actsender) {
 
   get_pquoted(&p, hs); /* timestamp */
   s = hs;
-  while (*s) if (!isdigit(*s++)) {
+  while (*s) if (!isdigit((u_char) *s++)) {
     debug(5, -1, 228, "invalid digit in timestamp");
     return -1;
   }
@@ -332,7 +332,7 @@ static short get_wprot_m(wprottype *wpb, char *p, char *actsender) {
   
   get_pquoted(&p, hs); /* hops */
   s = hs;
-  while (*s) if (!isdigit(*s++)) {
+  while (*s) if (!isdigit((u_char) *s++)) {
     debug(5, -1, 228, "invalid digit in hops");
     return -1;
   }
@@ -435,7 +435,7 @@ static short get_wprot_e(wprottype *wpb, char *p, char *actsender) {
   
   get_pquoted(&p, hs); /* hops */
   s = hs;
-  while (*s) if (!isdigit(*s++)) return -1;
+  while (*s) if (!isdigit((u_char) *s++)) return -1;
   wpb->hops = atoi(hs);
   if (wpb->hops < 1) return -1;
   if (wpb->hops > MAXWPHOPS) return -1;
