@@ -505,7 +505,7 @@ static boolean yapp_upload_data(yapptype *yapp)
 
       w[0] = '\0';
       x = 4;
-      while (x <= len && isdigit(yapp->buffer[x])) {
+      while (x <= len && isdigit((u_char) yapp->buffer[x])) {
 	sprintf(w + strlen(w), "%c", yapp->buffer[x]);
 	x++;
       }
