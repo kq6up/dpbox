@@ -2693,9 +2693,9 @@ boolean valid_boardname(char *rubrik)
 
   notnum    = false;
   for (x = 0; x < l; x++) {
-    if (!(rubrik[x] == '_' || rubrik[x] == '-' || isupper(rubrik[x]) || isdigit(rubrik[x])))
+    if (!(rubrik[x] == '_' || rubrik[x] == '-' || isupper((u_char) rubrik[x]) || isdigit((u_char) rubrik[x])))
       return false;
-    else if (isupper(rubrik[x]))
+    else if (isupper((u_char) rubrik[x]))
       notnum  = true;
   }
   return notnum;
@@ -2781,7 +2781,7 @@ boolean strip_invalid_boardname_chars(char *rubrik)
   p   = rubrik;
   p2  = rubrik;
   while ((c = upcase_(*p++))) {
-    if (c == '_' || c == '-' || isupper(c) || isdigit(c))
+    if (c == '_' || c == '-' || isupper((u_char) c) || isdigit((u_char) c))
       *p2++ = c;
   }
   *p2 = '\0';
@@ -3347,7 +3347,7 @@ static boolean ordne_sparm_zu(char *inp_, char *inp1_, char *mbx, char *lt,
 
   case '#':
     if ((unsigned long)strlen(inp) < 32 && /* !!!CHECK */
-	((1L << strlen(inp)) & 0x1c) != 0 && isdigit(inp[1])) {
+	((1L << strlen(inp)) & 0x1c) != 0 && isdigit((u_char) inp[1])) {
       strdelete(inp, 1, 1);
       strcpy(lt, inp);
       return true;
@@ -3692,7 +3692,7 @@ void get_numbers(short unr, boolean plong, char *eingabe, long *start, long *end
       *hs = '\0';
       y = x;
       y++;
-      while (y <= t && eingabe[y - 1] != ' ' && isdigit(eingabe[y - 1])) {
+      while (y <= t && eingabe[y - 1] != ' ' && isdigit((u_char) eingabe[y - 1])) {
 	sprintf(hs + strlen(hs), "%c", eingabe[y - 1]);
 	y++;
       }
@@ -3746,10 +3746,10 @@ void get_numbers(short unr, boolean plong, char *eingabe, long *start, long *end
 
     FORLIM = strlen(ein);
     for (x = 0; x < FORLIM; x++) {
-      if (isdigit(ein[x]))
+      if (isdigit((u_char) ein[x]))
 	numbers = true;
       if (ein[x] == '_' || (ein[x] & 255) == 158 || (ein[x] & 255) == 154 ||
-	  (ein[x] & 255) == 153 || (ein[x] & 255) == 142 || isupper(ein[x]))
+	  (ein[x] & 255) == 153 || (ein[x] & 255) == 142 || isupper((u_char) ein[x]))
 	alphab = true;
       if (ein[x] == '-')
 	slashct++;
