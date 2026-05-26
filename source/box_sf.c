@@ -3575,7 +3575,7 @@ void analyse_fbb_answer(short unr, char *eingabe_)
 
     case '!':   /* send with resume offset  	      */
       w[0]  	= '\0';
-      while (strlen(eingabe) > 1 && isdigit(eingabe[1])) {
+      while (strlen(eingabe) > 1 && isdigit((u_char) eingabe[1])) {
 	sprintf(w + strlen(w), "%c", eingabe[1]);
 	strdelete(eingabe, 1, 1);
       }
