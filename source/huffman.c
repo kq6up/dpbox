@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
@@ -917,8 +918,10 @@ int crlfconv, gzip, preserve_original;
   error = 0;
   fseek(infile, 0L, 2);
   textsize = ftell(infile);
-  if (fwrite(&textsize, sizeof textsize, 1, outfile) < 1) {
-    error = 1;
+  { int32_t wire_size = (int32_t)textsize;  /* 32-bit wire format regardless of platform */
+    if (fwrite(&wire_size, sizeof wire_size, 1, outfile) < 1) {
+      error = 1;
+    }
   }
   if (!error) {
     if (textsize == 0)
@@ -1000,8 +1003,11 @@ int crlfconv, gzip, preserve_original;
       fclose(infile);
       return(1);
     } 
-    if (fread(&textsize, sizeof textsize, 1, infile) < 1)
-      error = 1;
+    { int32_t wire_size = 0;  /* 32-bit wire format regardless of platform */
+      if (fread(&wire_size, sizeof wire_size, 1, infile) < 1)
+        error = 1;
+      textsize = (unsigned long int)wire_size;
+    }
     if (!error) {
       if (textsize == 0)
         error = 1;
@@ -1223,12 +1229,14 @@ int crlfconv, gzip;
   destbuf = malloc(destbuflen);   /* allocate buffer with security margin */
   if (destbuf != NULL) {
     destbufptr = destbuf;
-    ptr = (char *)&size;
-    /* send length */
-    for (i=0;i<sizeof(size);i++) {
-      if (wri_char(*ptr++) == EOF) {
-        error = 1;
-        break;
+    { int32_t wire_size = (int32_t)size;  /* 32-bit wire format regardless of platform */
+      ptr = (char *)&wire_size;
+      /* send length */
+      for (i=0;i<sizeof(wire_size);i++) {
+        if (wri_char(*ptr++) == EOF) {
+          error = 1;
+          break;
+        }
       }
     }
     if (!error) {
@@ -1258,8 +1266,10 @@ int crlfconv, gzip;
     return(1);
   } 
   error = 0;
-  if (fwrite(&size, sizeof size, 1, outfile) < 1) {
-    error = 1;
+  { int32_t wire_size = (int32_t)size;  /* 32-bit wire format regardless of platform */
+    if (fwrite(&wire_size, sizeof wire_size, 1, outfile) < 1) {
+      error = 1;
+    }
   }
   if (!error) {
     if (Encode())
@@ -1282,7 +1292,7 @@ int crlfconv, gzip;
   int error;
   char *ptr;
   int i;
-  long packsize;
+  int32_t packsize;
   char tempname[80];
   char *outputfptr;
   int conv;
