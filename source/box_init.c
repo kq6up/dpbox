@@ -1618,7 +1618,7 @@ static void load_boxconfig(short unr)
       
       if (!strcmp(w, "FHEADER")) {
 	cut(h2, 107 - strlen(ownhiername));
-	strcpy(ownfheader, h2);
+	snprintf(ownfheader, sizeof(ownfheader), "%s", h2);
 	continue;
       }
 

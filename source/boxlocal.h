@@ -994,7 +994,7 @@ vextern char		lastproctxt[256];
 vextern char		current_command[300];
 vextern char		current_user[20];
 vextern mbxtype		ownhiername;
-vextern char		ownfheader[31];
+vextern char		ownfheader[128];
 vextern char		dp_vnr[5];
 vextern char		dp_vnr_sub[4];
 vextern char		dp_date[11];
