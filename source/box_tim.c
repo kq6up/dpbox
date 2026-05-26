@@ -225,6 +225,8 @@ void do_quit(short unr, boolean abort, boolean verbose)
   if (!boxrange(unr))
     return;
 
+  utc_clock();   /* refresh clock_.ixtime before computing connect duration */
+
   if (verbose) {
     sprintf(STR1, "%scookies%cdoc", boxsysdir, extsep);
     if (give_cookie(unr, wlnuser, STR1))
