@@ -191,7 +191,7 @@ static int split_the_word(char *outw, char **inw, int *wlen)
 		return (*wlen > 0);
 	} else {
 		n = p;
-		while ((c = *n++) && isdigit(c));
+		while ((c = *n++) && isdigit((u_char) c));
 		if (!c) {
 			strcpy(--outw, p);
 			*wlen = (--n - *inw) - 1;
@@ -219,7 +219,7 @@ static int convert_the_word(char *outw, char *inw)
 			continue;
 
 		wlen++;
-		c = tolower(c);
+		c = tolower((u_char) c);
 		
 		switch ((unsigned char)c) {
 
@@ -259,7 +259,7 @@ static int convert_the_word(char *outw, char *inw)
 		  	*outw++ = c;
 		  	ct++;
 		  	if (nonum == 0)
-		  		if (!isdigit(c))
+		  		if (!isdigit((u_char) c))
 		  			nonum = 1;
 		  	break;
 		}
