@@ -1,17 +1,21 @@
 #!/bin/sh
-# apply_pristine_patches.sh
-# Applies existing pkgsrc patches (patch-aa through patch-az) as
+# apply_new_patches.sh
+# Applies new dpbox patches (patch-ba through patch-bg) as
 # individual git commits and pushes each one to GitHub.
 #
 # Run from: /Users/chris/dpbox-6.00.00
-# Usage: sh apply_pristine_patches.sh
+# Usage: sh apply_new_patches.sh
 #
 # Bails out immediately if any step fails.
+#
+# Prerequisites:
+#   - All pristine pkgsrc patches already applied and pushed
+#   - New patch files in $NEW_PATCH_DIR
 
 set -e
 
 REPO_DIR="/Users/chris/dpbox-6.00.00"
-PATCH_DIR="/Users/chris/pkgsrc/ham/dpbox/patches"
+NEW_PATCH_DIR="/Users/chris/pkgsrc/ham/dpbox/patches"
 
 apply_and_commit() {
     PATCH_FILE=$1
@@ -62,142 +66,61 @@ apply_and_commit() {
 }
 
 # -----------------------------------------------------------------------
-# EXISTING PKGSRC PATCHES (patch-aa through patch-az)
-# Applied in logical groups, not strictly alphabetical
+# YOUR NEW PATCHES (patch-ba through patch-bg)
+# 64-bit portability fixes and bug fixes not in original pkgsrc patches
 # -----------------------------------------------------------------------
 
-# Makefile
+# patch-ba: Makefile -O0 workaround (split from pristine patch-aa)
 apply_and_commit \
-    "$PATCH_DIR/patch-aa" \
-    "Makefile.netbsd: update version string and build flags for 6.00.00" \
+    "$NEW_PATCH_DIR/patch-ba" \
+    "Workaround optimization crash: -O0 -g pending root cause investigation" \
     "source"
 
-# Type correctness
+# patch-bb: WP/MYBBS %jd fixes (split from pristine patch-ay)
 apply_and_commit \
-    "$PATCH_DIR/patch-ab" \
-    "Fix box_timing2 parameter type: long -> time_t for correctness" \
+    "$NEW_PATCH_DIR/patch-bb" \
+    "Fix WP/MYBBS protocol crashes: %ld -> %jd for 64-bit long values in box_wp.c" \
     "source"
 
-# Missing includes
+# patch-bc: DFree() integer overflow
 apply_and_commit \
-    "$PATCH_DIR/patch-ad" \
-    "Fix missing #include <string.h> in md2md5.c" \
+    "$NEW_PATCH_DIR/patch-bc" \
+    "Fix DFree() integer overflow causing false DISK FULL on large filesystems" \
     "source"
 
+# patch-bd: connect time display fix
 apply_and_commit \
-    "$PATCH_DIR/patch-ae" \
-    "Fix missing #include <limits.h> and add DragonFly BSD guards in init.h" \
+    "$NEW_PATCH_DIR/patch-bd" \
+    "Fix stale clock in do_quit() causing wrong connect time display" \
     "source"
 
-# DragonFly BSD platform support
+# patch-be: FHEADER buffer overflow
 apply_and_commit \
-    "$PATCH_DIR/patch-ac" \
-    "Add DragonFly BSD platform support to filesys.h" \
+    "$NEW_PATCH_DIR/patch-be" \
+    "Fix ownfheader buffer overflow truncating FHEADER config value" \
     "source"
 
+# patch-bf: IFACE_CMDBUF struct misalignment
 apply_and_commit \
-    "$PATCH_DIR/patch-af" \
-    "Add DragonFly BSD platform support to filesys.c" \
+    "$NEW_PATCH_DIR/patch-bf" \
+    "Fix IFACE_CMDBUF struct misalignment on 64-bit systems causing session hang" \
     "source"
 
+# patch-bg: Huffman wire format
 apply_and_commit \
-    "$PATCH_DIR/patch-ah" \
-    "Add DragonFly BSD platform support to status.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ai" \
-    "Add DragonFly BSD platform support to shell.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ak" \
-    "Add DragonFly BSD platform support to pastrix.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-al" \
-    "Add DragonFly BSD platform support to init.h" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-am" \
-    "Add DragonFly BSD platform support to init.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-an" \
-    "Add DragonFly BSD version string to box_sys.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ap" \
-    "Add DragonFly BSD platform support to main.c" \
-    "source"
-
-# Undefined behavior / correctness fixes
-apply_and_commit \
-    "$PATCH_DIR/patch-ag" \
-    "Fix undefined behavior: sequence point bug in conv_string functions in pastrix.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ao" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in box.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-aq" \
-    "Fix undefined behavior: (u_char) casts and stray semicolon in box_mem.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ar" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in box_scan.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-as" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in box_sf.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-at" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in box_sub.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-au" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in crawler.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-av" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in dpputlinks.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-aw" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in yapp.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ax" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in dpgate.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-ay" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in box_wp.c" \
-    "source"
-
-apply_and_commit \
-    "$PATCH_DIR/patch-az" \
-    "Fix undefined behavior: add (u_char) casts to ctype functions in box_rout.c" \
+    "$NEW_PATCH_DIR/patch-bg" \
+    "Fix Huffman wire format size field: long -> int32_t fixes Decode-Error from 32-bit neighbors" \
     "source"
 
 echo ""
 echo "=========================================="
-echo "ALL PRISTINE PKGSRC PATCHES APPLIED"
-echo "Ready for your new patches (patch-ba onwards)"
+echo "ALL NEW PATCHES APPLIED SUCCESSFULLY"
+echo ""
+echo "Next steps:"
+echo "  1. Test build on NetBSD with -O2 to check if crash is gone"
+echo "     (if so, patch-ba can be removed)"
+echo "  2. Write patch-bh (system CFLAGS / strip fix)"
+echo "  3. Tag v6.1.0 and create GitHub Release:"
+echo "     git tag v6.1.0"
+echo "     git push origin v6.1.0"
 echo "=========================================="
