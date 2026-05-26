@@ -19,7 +19,7 @@
 #include "boxlocal.h"
 #include "tools.h"
 
-#if defined(__linux__) || defined(__NetBSD__)
+#if defined(__linux__) || defined(__NetBSD__) || defined(__DragonFly__)
 #include <ctype.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -80,7 +80,7 @@ long statclock(void)
 #endif
 }
 
-#if defined(__linux__) || defined(__NetBSD__)
+#if defined(__linux__) || defined(__NetBSD__) || defined(__DragonFly__)
 
 long get_cpuusage(void)
 {
@@ -557,7 +557,7 @@ char lowcase(register char ch)
     return 129;
 
   default:
-    return tolower(ch);
+    return tolower((u_char) ch);
   }
 }
 
@@ -576,7 +576,7 @@ char upcase_(register char ch)
     return 154;
  
   default:
-    return toupper(ch);
+    return toupper((u_char) ch);
   }
 }
 
@@ -615,7 +615,7 @@ boolean zahl(register char *s)
     if (*s == '\0') return false;
   }
   while (*s != '\0') {
-    if (!isdigit(*s++)) {
+    if (!isdigit((u_char) *s++)) {
       return false;
     }
   }
@@ -633,7 +633,7 @@ boolean azahl(char *s)
     if (s[1] == '\0')
       return false;
     while (*s != '\0') {
-      if (!((*s >= 'a' && *s <= 'f') || (*s >= 'A' && *s <= 'F') || isdigit(*s)))
+      if (!((*s >= 'a' && *s <= 'f') || (*s >= 'A' && *s <= 'F') || isdigit((u_char) *s)))
 	return false;
       s++;
     }
@@ -669,9 +669,9 @@ boolean rzahl(char *s)
 
   digit = false;
   while (*s != '\0') {
-    if (!(*s == 'e' || *s == 'E' || *s == '+' || *s == '-' || *s == '.' || isdigit(*s)))
+    if (!(*s == 'e' || *s == 'E' || *s == '+' || *s == '-' || *s == '.' || isdigit((u_char) *s)))
       return false;
-    else if (isdigit(*s))
+    else if (isdigit((u_char) *s))
       digit = true;
   }
 
@@ -702,7 +702,7 @@ static short makehexdigit(char c)
     return c - 87;
 
   default:
-    if (isdigit(c))
+    if (isdigit((u_char) c))
       return c - '0';
     else
       return 0;
