@@ -2226,7 +2226,7 @@ void list_brett(short unr, char *board, short von, short bis, short threshold,
 		      }
 		      FORLIM1 = strlen(hs);
 		      for (x = 0; x < FORLIM1; x++) {
-			if (!(isupper(hs[x]) || isdigit(hs[x]))) hs[x] = ' ';
+			if (!(isupper((u_char)hs[x]) || isdigit((u_char)hs[x]))) hs[x] = ' ';
 		      }
 		      wlnuser(unr, hs);
 		      rset	= false;
@@ -3609,7 +3609,7 @@ static void transfer(short unr, char *quelle, short nr, short bis, char *com_)
     x		= k + 1;
     l		= strlen(com);
     while (x <= l && com[x - 1] == ' ') x++;
-    while (x <= l && isdigit(com[x - 1])) {
+    while (x <= l && isdigit((u_char) com[x - 1])) {
       sprintf(hs + strlen(hs), "%c", com[x - 1]);
       x++;
     }
@@ -4297,6 +4297,8 @@ void begruessung(short unr)
   wlnuser(unr, hs);
 #ifdef __NetBSD__
   sprintf(w, "dpbox (NetBSD) v%s%s", dp_vnr, dp_vnr_sub);
+#elif defined(__DragonFly__)
+  sprintf(w, "dpbox (DragonFly) v%s%s", dp_vnr, dp_vnr_sub);
 #else
   #ifdef __linux__
   sprintf(w, "dpbox (Linux) v%s%s", dp_vnr, dp_vnr_sub);
