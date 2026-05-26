@@ -155,7 +155,7 @@ void display_buf(char *buf,int len)
     if (buf[i] == '\r') {
       putchar('\n');
     }
-    else if (isprint(buf[i]))
+    else if (isprint((u_char) buf[i]))
       putchar(buf[i]);
     else
       putchar('.');
@@ -696,8 +696,8 @@ static void convert_cgi_command(char *s)
   while (*i) {
     if (*i == '%' && strlen(i) > 2 && i[1] != '%') {
       i++;
-      h[0] = toupper(*i++);
-      h[1] = toupper(*i++);
+      h[0] = toupper((u_char) *i++);
+      h[1] = toupper((u_char) *i++);
       h[2] = '\0';
       r = 32;
       sscanf(h, "%X", &r);
