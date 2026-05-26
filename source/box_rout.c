@@ -1837,7 +1837,7 @@ short scan_hierarchicals(char *from1, char *puffer, long size, time_t *txdate,
 		    strsub(adesc, hs, i + 1, k - i - 1);
 		    strdelete(hs, 1, k);
 		    get_word(hs, w1);
-		    if (*w1 != '\0' && isalpha(w1[0]))
+		    if (*w1 != '\0' && isalpha((u_char) w1[0]))
 		      sprintf(adesc + strlen(adesc), " %s", w1);
 		  }
 		}
