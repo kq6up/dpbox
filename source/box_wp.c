@@ -22,6 +22,7 @@
 #include "box_file.h"
 #include "box_send.h"
 #include "box_sys.h"
+#include <inttypes.h>
 
 
 
@@ -58,8 +59,8 @@ static short set_wprot_r(char *p, wprottype *wpb) {
   if (!valid_wprot_timestamp(wpb->timestamp)) return -1;
   if (wpb->hops < 0) return -1;
   if (wpb->hops > MAXWPHOPS) return -1;
-  snprintf(p, 999, "   R %s %ld %ld %d %ld",
-    	   wpb->call, wpb->version, wpb->timestamp, wpb->hops+1, wpb->quality);
+  snprintf(p, 999, "   R %s %jd %jd %d %jd",
+    	   wpb->call, (intmax_t) wpb->version, (intmax_t) wpb->timestamp, wpb->hops+1, (intmax_t) wpb->quality);
   set_wprot_checksum(p);
   return 0;
 }
@@ -147,8 +148,8 @@ static short set_wprot_b(char *p, wprottype *wpb) {
   if (!*proto) strcpy(proto, "?");
   nstrcpy(hwadr, wpb->hwadr, 80);
   if (!*hwadr) strcpy(hwadr, "?");
-  snprintf(p, 255, "   B %s %ld %u %s %s %s %ld %d",
-    	   wpb->bbs, wpb->version, wpb->status, sysop, proto, hwadr, wpb->timestamp, wpb->hops+1);
+  snprintf(p, 255, "   B %s %jd %u %s %s %s %jd %d",
+    	   wpb->bbs, (intmax_t) wpb->version, wpb->status, sysop, proto, hwadr, (intmax_t) wpb->timestamp, wpb->hops+1);
   set_wprot_checksum(p);
   return 0;
 }
@@ -269,8 +270,8 @@ static short set_wprot_m(char *p, wprottype *wpb) {
   nstrcpy(qth, wpb->qth, 80);
   if (!*qth) strcpy(qth, "?");
   else if (count_words(qth) > 1) caps_string(qth);
-  snprintf(p, 255, "   M %s %s %s %ld %s %d %s %s %s",
-      	   wpb->call, wpb->bbs, bid, wpb->timestamp, origin, wpb->hops+1, name, zip, qth);
+  snprintf(p, 255, "   M %s %s %s %jd %s %d %s %s %s",
+      	   wpb->call, wpb->bbs, bid, (intmax_t) wpb->timestamp, origin, wpb->hops+1, name, zip, qth);
   set_wprot_checksum(p);
   return 0;
 }
@@ -559,7 +560,7 @@ void show_routing_stat(short unr, char *call, char *options, rsoutputproc out)
 		break;
       case 1  : lasttime = rss.timestamp;
 		ix2string4(rss.timestamp, w);
-		snprintf(hs, 79, "%s %7ld %2d %s", w, rss.quality, rss.hops, rss.rxfrom);
+		snprintf(hs, 79, "%s %7jd %2d %s", w, (intmax_t) rss.quality, rss.hops, rss.rxfrom);
 		out(unr, hs);
       	      	break;
       default : break;
@@ -620,8 +621,8 @@ void show_routing_stat(short unr, char *call, char *options, rsoutputproc out)
       case 0    : if (avgct > 0) avgqual = avgqual / avgct;
 		  ix2string4(mintime, w);
 		  ix2string4(maxtime, w2);
-		  snprintf(hs, 200, " %*s : %s - %s / %ldh %ldm avgqual %ld",
-		      	   LEN_CALL, call, w, w2, xstep / (60 * 60), (xstep % (60 * 60)) / 60, avgqual);
+		  snprintf(hs, 200, " %*s : %s - %s / %jdh %jdm avgqual %jd",
+		      	   LEN_CALL, call, w, w2, (intmax_t) (xstep / (60 * 60)), (intmax_t) ((xstep % (60 * 60)) / 60), (intmax_t) avgqual);
 		  out(unr, hs);
 		  out(unr, "");
       	      	  for (y = CHARTY-1; y >= 0; y--) {
@@ -638,7 +639,7 @@ void show_routing_stat(short unr, char *call, char *options, rsoutputproc out)
 		      }
 		    }
 		    w[CHARTX] = '\0';
-		    snprintf(hs, 200, "%7ld +%s", cury, w);
+		    snprintf(hs, 200, "%7jd +%s", (intmax_t) cury, w);
 		    del_lastblanks(hs);
 		    out(unr, hs);
       	      	  }
@@ -746,7 +747,7 @@ static void create_em_message(wprottype *wpb)
     strcpy(header.betreff, wpb->erasebid);
   } else { /* M messages */
     strcpy(header.verbreitung, e_m_verteiler);
-    snprintf(hs, LEN_SUBJECT, "%s %ld", wpb->bbs, wpb->timestamp);
+    snprintf(hs, LEN_SUBJECT, "%s %jd", wpb->bbs, (intmax_t) wpb->timestamp);
     strcpy(header.betreff, hs);
   }
 
@@ -780,17 +781,17 @@ void add_wprotline(wprottype *wpb, boolean meta)
 
   switch (wpb->which) {
     case 'M' : 	if (set_wprot_m(hs, wpb) < 0) return;
-      	      	snprintf(sl, wpbhlen+1, "M/%-*s %10ld %-*s ", LEN_CALL, wpb->call, wpb->timestamp, LEN_CALL, wpb->rxfrom);
+      	      	snprintf(sl, wpbhlen+1, "M/%-*s %10jd %-*s ", LEN_CALL, wpb->call, (intmax_t) wpb->timestamp, LEN_CALL, wpb->rxfrom);
 		nstrcat(sl, hs, 255);
 		break;
     case 'E' :  if (set_wprot_e(hs, wpb) < 0) return;
       	      	if (dummycounter >= 9999) dummycounter = 0;
 		dummycounter++;
-      	      	snprintf(sl, wpbhlen+1, "E/%-*s %4ld %-*s ", LEN_BID, wpb->erasebid, dummycounter, LEN_CALL, wpb->rxfrom);
+      	      	snprintf(sl, wpbhlen+1, "E/%-*s %4jd %-*s ", LEN_BID, wpb->erasebid, (intmax_t) dummycounter, LEN_CALL, wpb->rxfrom);
       	      	nstrcat(sl, hs, 255);
       	      	break;
     case 'B' :  if (set_wprot_b(hs, wpb) < 0) return;
-      	      	snprintf(sl, wpbhlen+1, "B/%-*s %10ld %-*s ", LEN_CALL, wpb->call, wpb->timestamp, LEN_CALL, wpb->rxfrom);
+      	      	snprintf(sl, wpbhlen+1, "B/%-*s %10jd %-*s ", LEN_CALL, wpb->call, (intmax_t) wpb->timestamp, LEN_CALL, wpb->rxfrom);
       	      	nstrcat(sl, hs, 255);
       	      	break;
     case 'R' :  if (!do_wprot_routing && !meta) return;
@@ -799,7 +800,7 @@ void add_wprotline(wprottype *wpb, boolean meta)
       	      	cur_ixtime = clock_.ixtime;
       	      	if (cur_ixtime <= last_ixtime) cur_ixtime = last_ixtime + 1;
       	      	last_ixtime = cur_ixtime;
-      	      	snprintf(sl, wpbhlen+1, "R/%-*s %10ld %-*s ", LEN_CALL, wpb->call, cur_ixtime, LEN_CALL, wpb->rxfrom);
+      	      	snprintf(sl, wpbhlen+1, "R/%-*s %10jd %-*s ", LEN_CALL, wpb->call, (intmax_t) cur_ixtime, LEN_CALL, wpb->rxfrom);
       	      	nstrcat(sl, hs, 255);
       	      	break;
     default  :	return;
@@ -967,8 +968,8 @@ void generate_wprot_files(void)
     *w	= '\0';
     *ll     	= '\0';
     while (file2lstr(inf, hs, 999)) { /* eine Zeile aus wprotmsg.dat holen */
-      strcpy(lc, w);	      	  /* = w der nächsten Zeile des letzten Durchlaufs */
-      get_word(hs, w);      	  /* = Usercall für den Eintrag */
+      strcpy(lc, w);	      	  /* = w der nÃ¤chsten Zeile des letzten Durchlaufs */
+      get_word(hs, w);      	  /* = Usercall fÃ¼r den Eintrag */
       get_word(hs, ts);     	  /* = timestamp (ueberlesen) */
       if (strcmp(w, lc) && *ll) str2file(&outf, ll, true);
       strcpy(ll, hs);       	  /* sichern */
@@ -1115,8 +1116,8 @@ void generate_wp_files(void)
     *w	= '\0';
     *ll     	= '\0';
     while (file2str(inf, hs)) { /* eine Zeile aus wpmess.dat holen */
-      strcpy(lc, w);	      	  /* = w der nächsten Zeile des letzten Durchlaufs */
-      get_word(hs, w);      	  /* = Usercall für den Eintrag */
+      strcpy(lc, w);	      	  /* = w der nÃ¤chsten Zeile des letzten Durchlaufs */
+      get_word(hs, w);      	  /* = Usercall fÃ¼r den Eintrag */
       if (strcmp(w, lc)) add_wpmsg(ll, outf);
       strcpy(ll, hs);
     }
@@ -1191,8 +1192,8 @@ short process_wprotline(char *hs, char *actsender, boolean meta) {
   /* compare checksum with sent checksum */
   hs[2] = '\0';
   if (checksum != hatoi(hs)) {
-    snprintf(w, 200, "invalid wprot checksum: %s (%ld) != %d (meta=%d, len=%d)",
-      	      	    hs, hatoi(hs), checksum, meta, strlen(p)+3);
+    snprintf(w, 200, "invalid wprot checksum: %s (%jd) != %d (meta=%d, len=%d)",
+      	      	    hs, (intmax_t) hatoi(hs), checksum, meta, strlen(p)+3);
     debug(3, -1, 226, w);
     return -1; /* exit if invalid checksum */
   }
@@ -1424,8 +1425,8 @@ short process_wpline(char *hs, char *actwpfilesender)
   strcpy(qth, hs);   /* info/qth */
   del_lastblanks(qth);
   if (!*qth) return -1; /* must at least be "?" */
-  snprintf(hs, 255, "M @ %s < %s $%s %s %ld %s %s %s",
-      	   e_m_verteiler, call, WPDUMMYBID, bbs, time, zip, name, qth);
+  snprintf(hs, 255, "M @ %s < %s $%s %s %jd %s %s %s",
+      	   e_m_verteiler, call, WPDUMMYBID, bbs, (intmax_t) time, zip, name, qth);
   sf_rx_emt1(hs, actwpfilesender);
   return 0;
 }
