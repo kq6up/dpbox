@@ -401,9 +401,8 @@ short sfremovedir(char *name)
 
 #if defined(__linux__) || defined(__NetBSD__) || defined(__DragonFly__)
 
-#if (defined(__NetBSD__) && (__NetBSD_Version__ >= 299000900)) || defined(__DragonFly__)
 #include <sys/statvfs.h>
-#endif
+#include <stdint.h>
 
 
 /* simply copied that widespread file access code of former dpbox code  */
@@ -416,21 +415,30 @@ long Diskfree(int dummy)
   return 80000000L;
 }
 
-long DFree(char *mount)
+/*
+ * DFree() - return free disk space in kbytes for the filesystem
+ * containing 'mount'.
+ *
+ * The original implementation used statfs()/statvfs() with long
+ * arithmetic, which overflows on large (>2TB) filesystems, causing
+ * dpbox to falsely report DISK FULL.  Fixed to use statvfs() with
+ * explicit uint64_t arithmetic throughout.
+ */
+uint64_t DFree(char *mount)
 {
-#if defined(__linux__) || (defined(__NetBSD__) && (__NetBSD_Version__ < 299000900))
-  struct statfs mystatfs;
-  
-  statfs(mount, &mystatfs);
-#else
   struct statvfs mystatfs;
+  uint64_t bsize;
+  uint64_t bavail;
 
-  statvfs(mount, &mystatfs);
-#endif
-  if (mystatfs.f_bsize % 1024 == 0)
-    return (mystatfs.f_bsize / 1024) * mystatfs.f_bavail;
-  else
-    return mystatfs.f_bsize * (mystatfs.f_bavail / 1024);
+  if (statvfs(mount, &mystatfs) != 0)
+    return 0;
+
+  /* f_frsize is the POSIX-correct block size for f_bavail counts;
+   * fall back to f_bsize if f_frsize is zero (some older systems). */
+  bsize  = (uint64_t)(mystatfs.f_frsize ? mystatfs.f_frsize : mystatfs.f_bsize);
+  bavail = (uint64_t)mystatfs.f_bavail;
+
+  return (bavail * bsize) / 1024ULL;
 }
 
 

@@ -6,6 +6,7 @@
 #define FILESYS_H
 
 #include <fcntl.h>
+#include <stdint.h>
 #include "pastrix.h"
 
 
@@ -137,7 +138,7 @@ typedef void (*dispfilelistproc)(const short x, const char *s);
 /* these ones are coded different */
 
 extern long Diskfree(int dummy);
-extern long DFree(char *mount);
+extern uint64_t DFree(char *mount);
 extern boolean exist(char *name);
 extern long sfsize(char *name);
 extern short sfrename(char *oldname, char *newname);
