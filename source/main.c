@@ -8,9 +8,9 @@
 
 /* definition of version-number */
 
-#define DP_DATE		"27.04.2000"
-#define DP_VNR		"6.00"
-#define DP_VNR_SUB	".00"
+#define DP_DATE		"2026"
+#define DP_VNR		"6.11"
+#define DP_VNR_SUB	" KQ6UP"
 
 
 #ifdef __macos__
