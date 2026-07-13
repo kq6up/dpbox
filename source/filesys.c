@@ -9,6 +9,7 @@
 /************************************************************/
 
 #include "filesys.h"
+#include <time.h>
 
 #include <unistd.h>
 #if defined(__NetBSD__) || defined(__DragonFly__)

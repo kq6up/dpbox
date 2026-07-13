@@ -30,6 +30,7 @@
 
 #if defined(__linux__) || defined(__NetBSD__) || defined(__DragonFly__)
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>

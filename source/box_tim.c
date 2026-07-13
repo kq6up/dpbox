@@ -10,6 +10,7 @@
 
 
 #include <unistd.h>
+#include <time.h>
 
 #define BOX_TIM_G
 #include "main.h"
