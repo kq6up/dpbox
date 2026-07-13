@@ -6204,7 +6204,7 @@ boolean gen_sftest(short unr, char *eingabe)
   boardtype	rubrik;
   char		hs[256];
   mbxtype	mbx;
-  char		STR7[100];
+  char		STR7[256];
 
   split_sline(eingabe, rubrik, hs, mbx, hs, hs, hs);
   if (*mbx == '\0') {
@@ -6212,7 +6212,7 @@ boolean gen_sftest(short unr, char *eingabe)
       user_mybbs(rubrik, mbx);
   }
   add_hpath(mbx);
-  snprintf(STR7, 255, "%s @ %s", rubrik, mbx);
+  snprintf(STR7, sizeof(STR7), "%s @ %s", rubrik, mbx);
   wlnuser(unr, STR7);
   return (gen_sftest2(unr, rubrik, mbx));
 }
