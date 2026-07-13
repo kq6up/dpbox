@@ -9,7 +9,7 @@
 /* definition of version-number */
 
 #define DP_DATE		"2026"
-#define DP_VNR		"6.11"
+#define DP_VNR		"6.12"
 #define DP_VNR_SUB	" KQ6UP"
 
 
