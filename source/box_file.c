@@ -660,7 +660,8 @@ boolean update_mybbsfile(boolean by_usercommand, char *call_, time_t *updatetime
 
   debug(4, 0, 8, mybbs_);
 
-  strcpy(call, call_);
+  strncpy(call, call_, LEN_CALL);
+  call[LEN_CALL] = '\0';
   unhpath(mybbs_, mybbs);
 
   Result	= false;

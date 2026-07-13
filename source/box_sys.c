@@ -1390,7 +1390,8 @@ void change_mybbs(short unr, char *callx_, char *bbs_, long updatetime,
 
   chmbxsemaphore	= true;
   debug(2, unr, 94, callx_);
-  strcpy(callx, callx_);
+  strncpy(callx, callx_, LEN_CALL);
+  callx[LEN_CALL] = '\0';
   strcpy(bbs, bbs_);
   strcpy(level, level_);
   
