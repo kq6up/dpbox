@@ -218,7 +218,7 @@ void del_ext(char *s)
   i = strlen(s);
   while (i > 0 && s[i - 1] != extsep && !alldirsep(s[i - 1]))
     i--;
-  if (s[i - 1] == extsep)
+  if (i > 0 && s[i - 1] == extsep)
     s[i - 1] = '\0';
 }
 
@@ -233,7 +233,7 @@ void get_ext(char *s, char *sext)
   i = strlen(s);
   while (i > 0 && s[i - 1] != extsep && !alldirsep(s[i - 1]))
     i--;
-  if (s[i - 1] == extsep)
+  if (i > 0 && s[i - 1] == extsep)
     strsub(sext, s, i + 1, strlen(s) - i);
 }
 
@@ -616,7 +616,7 @@ void del_ext(char *s)
   i = strlen(s);
   while (i > 0 && s[i - 1] != extsep && !alldirsep(s[i - 1]))
     i--;
-  if (s[i - 1] == extsep)
+  if (i > 0 && s[i - 1] == extsep)
     s[i - 1] = '\0';
 }
 
@@ -630,7 +630,7 @@ void get_ext(char *s, char *sext)
   i = strlen(s);
   while (i > 0 && s[i - 1] != extsep && !alldirsep(s[i - 1]))
     i--;
-  if (s[i - 1] == extsep)
+  if (i > 0 && s[i - 1] == extsep)
     strsub(sext, s, i + 1, strlen(s) - i);
 }
 
