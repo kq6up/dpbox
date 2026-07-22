@@ -194,7 +194,7 @@ static boolean generate_linkcheck_data(short unr)
 /*
     write_msgid(-1, bid);
 */
-    snprintf(user[unr]->fbbprop[x].line, 255, "%s P %s %s %s %s 1000",
+    snprintf(user[unr]->fbbprop[x].line, sizeof(user[unr]->fbbprop[x].line), "%s P %s %s %s %s 1000",
       	      hs, Console_call, bcall, user[unr]->call, bid);
   }
   calc_prop_crc(unr, hs);
