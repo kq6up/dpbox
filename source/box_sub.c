@@ -2914,12 +2914,12 @@ long truesize(indexstruct rec)
   long sz;
 
   if (strcmp(rec.dest, "M")) {
-    sz = rec.size + strlen(rec.betreff) + 64;   /* Laenge des Headers */
+    sz = rec.size + strnlen(rec.betreff, LEN_SUBJECT) + 64;   /* Laenge des Headers */
     /* CR LF * 3         */
     if (*rec.id != '\0')
       sz += 35;
     if (*rec.rxfrom != '\0')
-      sz += strlen(rec.rxfrom) + 26;
+      sz += strnlen(rec.rxfrom, LEN_CALL) + 26;
     return sz;
   } else
     return 0;
