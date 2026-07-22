@@ -984,7 +984,7 @@ void add_line_to_buff(char **buf1, long *size1, long inspos, char *srline)
     if (*buf1 != NULL) {
       if (inspos > 0) sfread(k, inspos, *buf1);
       memcpy(*buf1+inspos, srline, ll);
-      *buf1[ll + inspos]  = 10;
+      (*buf1)[ll + inspos]  = 10;
       offset  	= ll + inspos + 1;
       sfread(k, *size1 - inspos, *buf1+offset);
       *size1  	= size2;
