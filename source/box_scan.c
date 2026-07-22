@@ -462,7 +462,7 @@ static boolean check_sanity(char *puffer, long size, char *absender, char *board
   boardtype toboard;
   mbxtype   frombbs, sendmbx, rcall;
   bidtype   rbid, lastbid;
-  char	    rdate[15];
+  char	    rdate[15+1];
   char	    fromline[MAXFROMLINE+1], toline[MAXTOLINE+1];
   char	    hs[256], w[256], w2[256];
 
