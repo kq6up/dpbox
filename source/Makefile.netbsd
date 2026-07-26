@@ -35,8 +35,8 @@ httpdir		= $(prefix)/share/httpd/htdocs
 DEFS		= $(SYSTEM) $(NOSHELL)
 CC		= gcc
 CPP		= $(CC) -E
-CFLAGS		= -Wall -O2 -funsigned-char -fomit-frame-pointer -fno-strength-reduce
-CRAWLERCFLAGS	= -Wall -O3 -funsigned-char -fomit-frame-pointer -fno-strength-reduce
+CFLAGS		= -Wall -O2 -funsigned-char -fomit-frame-pointer -fno-strength-reduce -Wno-error=implicit-int -Wno-error=implicit-function-declaration -Wno-error=int-conversion
+CRAWLERCFLAGS	= -Wall -O3 -funsigned-char -fomit-frame-pointer -fno-strength-reduce -Wno-error=implicit-int -Wno-error=implicit-function-declaration -Wno-error=int-conversion
 LD		= $(CC)
 LDFLAGS		= -s
 LIBS		= -lm
