@@ -680,7 +680,7 @@ void send_pfbbdisk(short mode, short unr, long offset, char *tempname,
 
     for (x = 0; x <= 3; x++)
       crcfbb(firstfour[x], &sf_crc);
-    file_crc(3, tempname, sf_crc, 4, 0);
+    sf_crc	= file_crc(3, tempname, sf_crc, 4, 0);
     b1		= sf_crc & 0xff;
     b2		= (sf_crc >> 8) & 0xff;
     break;
@@ -696,7 +696,7 @@ void send_pfbbdisk(short mode, short unr, long offset, char *tempname,
     crcthp(0, &sf_crc);
     for (x = 0; x <= 3; x++)
       crcfbb(firstfour[x], &sf_crc);
-    file_crc(2, tempname, sf_crc, 4, 0);
+    sf_crc	= file_crc(2, tempname, sf_crc, 4, 0);
     b1		= sf_crc & 0xff;
     b2		= (sf_crc >> 8) & 0xff;
     break;
