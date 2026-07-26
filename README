@@ -1,3 +1,86 @@
+DPBOX 6.1.x - 64-bit modernization fork
+=======================================
+
+This tree is a maintenance fork of Joachim Schurig's DPBOX, updated to
+build and run correctly on 64-bit systems and current compilers.  The
+original 1999 README from DL8HBS follows below and is still accurate for
+the build and install mechanics; this section covers what has changed.
+
+Upstream for this fork:  https://github.com/kq6up/dpbox
+
+Supported build hosts
+---------------------
+
+Verified on 64-bit Linux (Debian 13 / GCC 14, Slackware 15) and on
+64-bit NetBSD/aarch64.  32-bit x86 also still works.
+
+Building standalone
+-------------------
+
+    cd source
+    make clean
+    make dep
+    make all
+
+source/Makefile is already a copy of Makefile.linux.  For NetBSD or other
+BSDs, copy source/Makefile.netbsd over source/Makefile first, and use
+gmake rather than make, since these makefiles are GNU make syntax:
+
+    cp Makefile.netbsd Makefile
+    gmake clean && gmake dep && gmake all
+
+Check the installation paths in the first few lines of the makefile
+before installing; Makefile.linux uses prefix = /usr, so the binaries
+land in /usr/sbin and /usr/bin rather than under /usr/local as the
+original README describes.
+
+Installing
+----------
+
+    make install
+
+as described in the original README below, along with instsave,
+instrestore and instclean.
+
+Building a Debian package with checkinstall
+-------------------------------------------
+
+checkinstall can wrap the install target to produce a .deb:
+
+    cd source
+    checkinstall --pkgname=dpbox --pkgversion=6.1.4 \
+                 --maintainer="you@example.org" \
+                 --backup=no --install=no \
+                 make -f Makefile.linux install
+
+--install=no builds the package without leaving it installed.  Four
+things to be aware of:
+
+  - The makefiles do not honour DESTDIR.  checkinstall does not require
+    it, since it tracks writes with installwatch, but the files really
+    are written to the live filesystem while the package is built.
+
+  - INSTALL_SPROGRAM passes -s, so installed binaries are stripped.
+    Override it if you want a package you can debug:
+    make INSTALL_SPROGRAM='install -c -m 700' install
+
+  - dpgate is installed setuid root.  Decide deliberately whether you
+    want that in a package.
+
+  - The configuration files under /etc/dpbox are not marked as Debian
+    conffiles, so a package upgrade will overwrite local changes.  Back
+    up /etc/dpbox before upgrading.
+
+pkgsrc
+------
+
+The package is also maintained in pkgsrc-wip as wip/dpbox, which builds
+from the tagged releases of the repository above.
+
+--------------------------------------------------------------------
+Original README follows, unchanged.
+--------------------------------------------------------------------
+
 Berlin, 31.10.1999
 
 If you are using a *BSD system, copy the file source/Makefile.*bsd to
