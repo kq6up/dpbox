@@ -1182,15 +1182,15 @@ void save_routing_table(void)
 
   append(w, "# Do not touch this file!", true);
   append(w, "# !!!", true);
-  snprintf(hs, 255, "LRB %ld", last_wprot_r);
+  snprintf(hs, 255, "LRB %jd", (intmax_t) last_wprot_r);
   append(w, hs, true);  
   
   sfp 	= routing_root;
   while (sfp != NULL) {
-    snprintf(hs, 255, "%s %ld %d %ld %ld", sfp->call, sfp->lastspeed, sfp->last_measured,
-      	      	      	    sfp->lasttry, sfp->lastconnecttry);
+    snprintf(hs, 255, "%s %jd %d %jd %jd", sfp->call, (intmax_t) sfp->lastspeed, sfp->last_measured,
+      	      	      	    (intmax_t) sfp->lasttry, (intmax_t) sfp->lastconnecttry);
     append(w, hs, true);
-    snprintf(hs, 255, "LMV %s %ld %d", sfp->call, clock_.ixtime, WPRLINKCHECKBLOCKS);
+    snprintf(hs, 255, "LMV %s %jd %d", sfp->call, (intmax_t) clock_.ixtime, WPRLINKCHECKBLOCKS);
     append(w, hs, false);
     y   = sfp->speedsrow;
     for (x = 0; x < LINKSPEEDS; x++) {

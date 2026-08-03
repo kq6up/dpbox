@@ -508,7 +508,8 @@ void par_l(short unr, const char *par, long value)
 
 static void calc_timestring(time_t seconds, char *hs)
 {
-  sprintf(hs, "%ld h %ld min %ld", seconds / 3600, seconds % 3600 / 60, seconds % 60);
+  sprintf(hs, "%jd h %jd min %jd", (intmax_t) (seconds / 3600),
+		(intmax_t) (seconds % 3600 / 60), (intmax_t) (seconds % 60));
 }
 
 
@@ -530,7 +531,7 @@ void show_stat(short unr, short x)
   seconds1	= WITH->processtime / 200;
   seconds2	= (WITH->processtime % 200) >> 1;
   calc_timestring(seconds1, w);
-  sprintf(hs, "CPU-Time    : %s.%.2ld sec", w, seconds2);
+  sprintf(hs, "CPU-Time    : %s.%.2jd sec", w, (intmax_t) seconds2);
   wlnuser(unr, hs);
   sprintf(hs, "Bytecount   : RX %ld / TX %ld", WITH->rbytes, WITH->sbytes);
   wlnuser(unr, hs);
@@ -538,9 +539,9 @@ void show_stat(short unr, short x)
     seconds0	= 1;
   if (seconds1 < 1)
     seconds1	= 1;
-  sprintf(hs, "Speed       : %ld bps (HF) / %ld bps (CPU)",
-		(WITH->rbytes + WITH->sbytes) * 8 / seconds0,
-		(WITH->rbytes + WITH->sbytes) * 8 / seconds1);
+  sprintf(hs, "Speed       : %jd bps (HF) / %jd bps (CPU)",
+		(intmax_t) ((WITH->rbytes + WITH->sbytes) * 8 / seconds0),
+		(intmax_t) ((WITH->rbytes + WITH->sbytes) * 8 / seconds1));
   wlnuser(unr, hs);
 }
 

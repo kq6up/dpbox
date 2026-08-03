@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include <limits.h>
+#include <inttypes.h>
 
 
 /* The following definitions work only on twos-complement machines */

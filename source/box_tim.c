@@ -510,7 +510,7 @@ void start_mailbeacon_manually(short unr)
     return;
   }
   sec = clock_.ixtime - laststartbalise;
-  sprintf(hs, "mail beacon generation in process since %ld seconds", sec);
+  sprintf(hs, "mail beacon generation in process since %jd seconds", (intmax_t) sec);
   wlnuser(unr, hs);
 }
 

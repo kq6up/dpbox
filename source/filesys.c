@@ -1141,7 +1141,8 @@ static void flockp2s(flocktype *hp, char *hs)
   else
     c = 'r';
 
-  sprintf(hs, "%3d %c %.2ld:%.2ld %s", hp->handle, c, t2 / 60, t2 % 60, hp->name);
+  sprintf(hs, "%3d %c %.2jd:%.2jd %s", hp->handle, c,
+	  (intmax_t) (t2 / 60), (intmax_t) (t2 % 60), hp->name);
 }
 
 

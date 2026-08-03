@@ -1007,7 +1007,7 @@ void expand_macro(short unr, char *hs)
 	  break;
 
 	case 'x':
-	  sprintf(w, "%ld", get_boxruntime_l() / SECPERDAY);
+	  sprintf(w, "%jd", (intmax_t) (get_boxruntime_l() / SECPERDAY));
 	  break;
 
 	case 'z':
