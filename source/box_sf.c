@@ -5453,6 +5453,8 @@ void load_sfinfos(void)
       hp->routing_guest = false;
       hp->send_em     	= false;
       hp->em  	      	= EM_UNKNOWN;
+      hp->mybbs_em    	= EM_WP;
+      hp->wprot_mode 	= WPROT_AUTO;
 
       strcpy(hs, dirinfo.d_fname);
       del_ext(hs);
@@ -5462,6 +5464,7 @@ void load_sfinfos(void)
       strcpy(lastcall, hs);
       
       if (get_wprot_neighbour(hp->call)) hp->em = EM_WPROT;
+      else hp->em = hp->mybbs_em;
 
       hp->maxbytes_p  	= 0;   /* ist ein Flag */
 
@@ -5502,11 +5505,27 @@ void load_sfinfos(void)
 
 	  if (!strcmp(w, "MYBBS")) {
 	    hp->send_em = true;
-      	    if (hp->em == EM_WPROT) continue;
-	    hp->em = EM_WP;
+	    hp->mybbs_em = EM_WP;
 	    get_word(hs, w);
-	    if (!*w) continue;
-	    if (!strcmp(w, "EM")) hp->em = EM_EM;
+	    if (*w && !strcmp(w, "EM")) hp->mybbs_em = EM_EM;
+	    continue;
+	  }
+
+	  /*
+	   * Per-neighbour WPROT override.  AUTO preserves the historical
+	   * behaviour and trusts a W in the remote SID.  ON and OFF force
+	   * or suppress WPROT regardless of the SID.
+	   */
+	  if (!strcmp(w, "WPROT")) {
+	    get_word(hs, w);
+	    if (!strcmp(w, "ON") || !strcmp(w, "YES") ||
+	        !strcmp(w, "TRUE") || !strcmp(w, "1"))
+	      hp->wprot_mode = WPROT_ON;
+	    else if (!strcmp(w, "OFF") || !strcmp(w, "NO") ||
+	             !strcmp(w, "FALSE") || !strcmp(w, "0"))
+	      hp->wprot_mode = WPROT_OFF;
+	    else
+	      hp->wprot_mode = WPROT_AUTO;
 	    continue;
 	  }
 
@@ -5624,6 +5643,14 @@ void load_sfinfos(void)
 	    hp->notfromp = nf1;
 	  }
 	}
+
+	/* Resolve the effective mode after the complete SF file has been read,
+	 * so WPROT and MYBBS may appear in either order. */
+	if (hp->wprot_mode == WPROT_ON ||
+	    (hp->wprot_mode == WPROT_AUTO && get_wprot_neighbour(hp->call)))
+	  hp->em = EM_WPROT;
+	else
+	  hp->em = hp->mybbs_em;
 	
 	if (!owncall) {
 	  /* Call of neighbour not found in FOR defs */

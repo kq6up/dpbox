@@ -497,6 +497,12 @@ typedef enum {
   EM_WPROT
 } em_type;
 
+typedef enum {
+  WPROT_AUTO,
+  WPROT_ON,
+  WPROT_OFF
+} wprot_mode_type;
+
 typedef struct sfdeftype {
   struct sfdeftype	*next;
   calltype		call;
@@ -507,7 +513,9 @@ typedef struct sfdeftype {
   boolean     	      	usersf;
   boolean     	        routing_guest;
   boolean     	      	send_em;
-  em_type       	em; /* EM_UNKNOWN, EM_EM, EM_WP, EM_WPROT */
+  em_type       	em; /* effective mode: EM_EM, EM_WP, EM_WPROT */
+  em_type       	mybbs_em; /* mode requested by MYBBS: EM_EM or EM_WP */
+  wprot_mode_type	wprot_mode; /* AUTO trusts SID W; ON/OFF override it */
   time_t		lasttry;
   time_t		timeout;
   unsigned short	tnc;

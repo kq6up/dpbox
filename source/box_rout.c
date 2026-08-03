@@ -1569,41 +1569,43 @@ void set_wprot_neighbour(char *call, boolean yes)
   short       handle, handle2;
   sfdeftype   *sfp;
   pathstr     fname, fname2;
-  char	      hs[256];
-  
+  char        hs[256];
+
   sfp = find_sf_pointer(call);
   if (sfp == NULL) return;
-  if (yes && sfp->em == EM_WPROT) return;
-  if (!yes && sfp->em != EM_WPROT) return;
 
-  if (yes) sfp->em = EM_WPROT;
-  else if (!yes) sfp->em = EM_WP; /* this is only a fallback, it should not happen */
-
+  /* Record what the remote SID actually advertised.  The per-neighbour
+   * WPROT setting controls only the effective protocol selection. */
   snprintf(fname, LEN_PATH, "%swprotnbr%cbox", boxstatdir, extsep);
   snprintf(fname2, LEN_PATH, "%s%ctemp", fname, extsep);
   handle  = sfopen(fname, FO_READ);
 
   if (handle < minhandle) { /* empty list */
     if (yes) append(fname, call, true);
-    return;
-  }  
-  
-  sfdelfile(fname2);
-  handle2 = sfcreate(fname2, FC_FILE);
-  if (handle2 < minhandle) return;
-  
-  while (file2str(handle, hs)) {
-    if (strcmp(hs, call)) {
-      if (find_sf_pointer(hs) != NULL) {
-      	str2file(&handle2, hs, true);
+  } else {
+    sfdelfile(fname2);
+    handle2 = sfcreate(fname2, FC_FILE);
+    if (handle2 >= minhandle) {
+      while (file2str(handle, hs)) {
+        if (strcmp(hs, call)) {
+          if (find_sf_pointer(hs) != NULL)
+            str2file(&handle2, hs, true);
+        }
       }
-    }
-  }
-  if (yes) str2file(&handle2, call, true);
+      if (yes) str2file(&handle2, call, true);
 
-  sfclosedel(&handle);
-  sfclose(&handle2);
-  sfrename(fname2, fname);
+      sfclosedel(&handle);
+      sfclose(&handle2);
+      sfrename(fname2, fname);
+    } else
+      sfclose(&handle);
+  }
+
+  if (sfp->wprot_mode == WPROT_ON ||
+      (sfp->wprot_mode == WPROT_AUTO && yes))
+    sfp->em = EM_WPROT;
+  else
+    sfp->em = sfp->mybbs_em;
 }
 
 /* this function prints the current linktables */
