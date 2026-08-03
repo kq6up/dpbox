@@ -1400,14 +1400,27 @@ void Get_DTime(unsigned short dtime, short *Hour, short *Min, short *Sec)
 
 void datum22string(short day, short mon, short year, char *datestring)
 {
-  sprintf(datestring, "%.2d.%.2d.%.2d", day, mon, year % 100);
-  cut(datestring, 8);
+  if (day < 1 || day > 31 || mon < 1 || mon > 12) {
+    memcpy(datestring, "00.00.00", 9);
+    return;
+  }
+
+  snprintf(datestring, 9, "%02d.%02d.%02d",
+           (int)day, (int)mon, (int)(year % 100));
 }
 
 void datum22string4(short day, short mon, short year, char *datestring)
 {
-  sprintf(datestring, "%.2d.%.2d.%.4d", day, mon, year+1900);
-  cut(datestring, 10);
+  int year4 = (int)year + 1900;
+
+  if (day < 1 || day > 31 || mon < 1 || mon > 12 ||
+      year4 < 0 || year4 > 9999) {
+    memcpy(datestring, "00.00.0000", 11);
+    return;
+  }
+
+  snprintf(datestring, 11, "%02d.%02d.%04d",
+           (int)day, (int)mon, year4);
 }
 
 void datum2string(unsigned short datum, char *datestring)
@@ -1436,8 +1449,14 @@ void ixdatum2string4(time_t datum, char *datestring)
 
 void zeit22string(short hour, short min, short sec, char *timestring)
 {
-  sprintf(timestring, "%.2d:%.2d:%.2d", hour, min, sec);
-  cut(timestring, 8);
+  if (hour < 0 || hour > 23 || min < 0 || min > 59 ||
+      sec < 0 || sec > 60) {
+    memcpy(timestring, "00:00:00", 9);
+    return;
+  }
+
+  snprintf(timestring, 9, "%02d:%02d:%02d",
+           (int)hour, (int)min, (int)sec);
 }
 
 void zeit2string(unsigned short zeit, char *timestring)
@@ -1770,7 +1789,23 @@ time_t utc_clock(void)
 
   last_ixtime 	  = clock_.ixtime;
 
-  decode_ixtime(clock_.ixtime, &clock_.day, &clock_.mon, &clock_.year, &clock_.hour, &clock_.min, &clock_.sec);
+  decode_ixtime(clock_.ixtime, &clock_.day, &clock_.mon, &clock_.year,
+                &clock_.hour, &clock_.min, &clock_.sec);
+
+  if (clock_.day < 1 || clock_.day > 31 ||
+      clock_.mon < 1 || clock_.mon > 12 ||
+      clock_.year < 70 || clock_.year > 137 ||
+      clock_.hour < 0 || clock_.hour > 23 ||
+      clock_.min < 0 || clock_.min > 59 ||
+      clock_.sec < 0 || clock_.sec > 60) {
+    fprintf(stderr,
+            "utc_clock: invalid decode: ixtime=%lld "
+            "date=%d.%d.%d time=%d:%d:%d\n",
+            (long long)clock_.ixtime,
+            (int)clock_.day, (int)clock_.mon, (int)clock_.year,
+            (int)clock_.hour, (int)clock_.min, (int)clock_.sec);
+  }
+
   zeit22string(clock_.hour, clock_.min, clock_.sec, clock_.zeit);
 
   clock_.year4	  = clock_.year + 1900;
