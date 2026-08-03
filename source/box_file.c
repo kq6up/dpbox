@@ -2489,7 +2489,8 @@ static void new_entry(short unr, char *dname1_, char *status_, char *betreff1,
   boolean	ack_requested, compress, is_html, dirty, part, db, ok, usersf;
   boolean	hmbxiscall, dirtys, ugzip, is_broken;
   long		nsize, psize, bct, lastpos1, lastpos2, sv, hsize, rs, li;
-  long		chargedate, txdate1, lesezeiger1;
+  time_t	chargedate, txdate1;
+  long		lesezeiger1;
   boolean	wpupdate, outdated, reject_it, hold_it, dbimport, dbimpfilter;
   boolean     	wprotupdate, direct_sf;
   char		*nmem, *puffer;

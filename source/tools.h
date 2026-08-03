@@ -3,6 +3,7 @@
 #define TOOLS_H
 
 #include "pastrix.h"
+#include <time.h>
 #include "boxlocal.h"
 
 
