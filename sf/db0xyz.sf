@@ -7,6 +7,18 @@ IFQRG LINK DB0XYZ-8 900
 
 SFPARMS 2 1 2 2000000 2000000 200000 120 0000 2359
 
+# WPROT policy for this forwarding partner:
+# AUTO = use the remote SID W flag (historical default)
+# ON   = force WPROT even if the remote SID has no W
+# OFF  = ignore the remote SID W flag and use MYBBS WP/EM below
+# If omitted, AUTO is used.
+#
+# Example for a BPQ neighbour whose SID W flag should be ignored:
+# WPROT OFF
+# MYBBS WP
+#
+#WPROT AUTO
+
 # Send Mybbs-Infos? If yes, which format (EM or WP) ?
 # Use WP for FBB, DPBOX, BAYBOX.
 # USE EM for DIEBOX and WAMPES only
